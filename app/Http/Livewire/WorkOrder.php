@@ -2,9 +2,14 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\City;
+use App\Models\Client;
+use App\Models\User;
 use App\Models\WorkOrder as ModelsWorkOrder;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 
@@ -12,10 +17,10 @@ class WorkOrder extends Component
 {
     use WithPagination;
 
-    public $countries, $country_id, $states, $state_id, $cities;
-    public $order_number, $client_id, $city_id, $address,  $internal_code, $description_equipment, $brand, $model, $magnitude, $series, $class;
+    public $countries, $country_id, $states, $state_id, $cities = null, $wark_order_id, $users = null;
+    public $order_number, $client_id, $city_id, $address,  $internal_code, $description_equipment, $brand, $model, $magnitude, $series, $class, $clients = null;
     public $resolution, $measuring_rangeity, $type_of_request, $person_requesting_id, $means_of_application, $date_of_request, $reception_number, $date_of_reception;
-
+    public $rows = [];
     public $addWorkOrder = false, $updateWorkOrder = false, $deleteWorkOrder = false;
 
     protected $listeners = ['render'];
@@ -28,7 +33,9 @@ class WorkOrder extends Component
 
     public function resetFields()
     {
-
+        $this->clients = null;
+        $this->cities = null;
+        $this->users = null;
         $this->order_number = "";
         $this->client_id = "";
         $this->city_id = "";
@@ -48,6 +55,7 @@ class WorkOrder extends Component
         $this->date_of_request = "";
         $this->reception_number = "";
         $this->date_of_reception = "";
+        $this->wark_order_id = "";
     }
 
     public function resetValidationAndFields()
@@ -71,35 +79,37 @@ class WorkOrder extends Component
     public function render()
     {
         $workOrders = ModelsWorkOrder::orderBy('id', 'asc')->paginate(15);
-        return view('work_order.index',compact('workOrders'));
+        return view('work_order.index', compact('workOrders'));
     }
 
     public function create()
     {
         if (Gate::denies('work_order_add')) {
-            return redirect()->route('users')
+            return redirect()->route('work_orders')
                 ->with('message', trans('message.You do not have the necessary permissions to execute the action.'))
                 ->with('alert_class', 'danger');
         }
         $this->resetValidationAndFields();
-        /* $this->user_id     = '';
-        $this->phone_codes = Country::orderBy('name', 'asc')->get();
-        $this->countries   = $this->phone_codes;
-        $this->documents   = DocumentType::orderBy('name', 'asc')->get();
-        $this->addWorkOrder     = true;*/
-        return view('user.create');
+        $this->addWorkOrder     = true;
+        $this->wark_order_id     = '';
+        $this->cities   = City::pluck('name', 'id');
+        Log::info( $this->cities);
+        $this->clients   = Client::pluck('name', 'id');
+        $this->users = User::pluck(DB::raw('CONCAT(first_name, " ", last_name)'), 'id');
+
+        return view('work_order.create');
     }
 
     public function store()
     {
         if (Gate::denies('work_order_add')) {
-            return redirect()->route('users')
+            return redirect()->route('work_orders')
                 ->with('message', trans('message.You do not have the necessary permissions to execute the action.'))
                 ->with('alert_class', 'danger');
         }
         $this->validate();
 
-        return redirect()->route('users')
+        return redirect()->route('work_orders')
             ->with('message', trans('message.Created Successfully.', ['name' => __('User')]))
             ->with('alert_class', 'success');
     }
@@ -107,7 +117,7 @@ class WorkOrder extends Component
     public function edit($id)
     {
         if (Gate::denies('work_order_edit')) {
-            return redirect()->route('users')
+            return redirect()->route('work_orders')
                 ->with('message', trans('message.You do not have the necessary permissions to execute the action.'))
                 ->with('alert_class', 'danger');
         }
@@ -115,7 +125,7 @@ class WorkOrder extends Component
         /* $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('users')
+            return redirect()->route('work_orders')
                 ->with('message', __('User not found'))
                 ->with('alert_class', 'danger');
         }
@@ -123,21 +133,21 @@ class WorkOrder extends Component
         $this->user_id          = $user->id;
         $this->first_name       = $user->first_name;
         $this->updateWorkOrder       = true;
-        return view('user.edit');
+        return view('work_order.edit');
         */
     }
 
     public function update()
     {
         if (Gate::denies('work_order_edit')) {
-            return redirect()->route('users')
+            return redirect()->route('work_orders')
                 ->with('message', trans('message.You do not have the necessary permissions to execute the action.'))
                 ->with('alert_class', 'danger');
         }
 
         $this->validate();
 
-        return redirect()->route('users')
+        return redirect()->route('work_orders')
             ->with('message', trans('message.Updated Successfully.', ['name' => __('User')]))
             ->with('alert_class', 'success');
     }
@@ -152,14 +162,14 @@ class WorkOrder extends Component
 
         /*
         if (Gate::denies('work_order_delete')) {
-            return redirect()->route('users')
+            return redirect()->route('work_orders')
                 ->with('message', trans('message.You do not have the necessary permissions to execute the action.'))
                 ->with('alert_class', 'danger');
         }
 
         $user = User::find($id);
         if (!$user) {
-            return redirect()->route('users')
+            return redirect()->route('work_orders')
                 ->with('message', __('User not found'))
                 ->with('alert_class', 'danger');
         }
@@ -172,14 +182,14 @@ class WorkOrder extends Component
     {
         /*
         if (Gate::denies('work_order_delete')) {
-            return redirect()->route('users')
+            return redirect()->route('work_orders')
                 ->with('message', trans('message.You do not have the necessary permissions to execute the action.'))
                 ->with('alert_class', 'danger');
         }
 
         $user = User::find($this->user_id);
         if (!$user) {
-            return redirect()->route('users')
+            return redirect()->route('work_orders')
                 ->with('message', __('User not found'))
                 ->with('alert_class', 'danger');
         }
@@ -193,8 +203,50 @@ class WorkOrder extends Component
         $user->delete();
         DB::commit();
 
-        return redirect()->route('users')
+        return redirect()->route('work_orders')
             ->with('message', trans('message.Deleted Successfully.', ['name' => __('User')]))
             ->with('alert_class', 'success'); */
+    }
+    public function addRow()
+    {
+        /*
+        // Asegurarse de que los campos no estén vacíos antes de agregar la fila
+        if ($this->name && $this->email) {
+            $this->rows[] = [
+                'name' => $this->name,
+                'email' => $this->email
+            ];
+
+            // Limpiar los campos de entrada después de agregar la fila
+            $this->name = '';
+            $this->email = '';
+
+            <div>
+    <!-- Formulario para agregar una fila -->
+    <form wire:submit.prevent="addRow">
+        <input type="text" wire:model="name" placeholder="Nombre" required>
+        <input type="email" wire:model="email" placeholder="Correo electrónico" required>
+        <button type="submit">Agregar</button>
+    </form>
+
+    <!-- Tabla para mostrar las filas -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($rows as $row)
+                <tr>
+                    <td>{{ $row['name'] }}</td>
+                    <td>{{ $row['email'] }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+        }*/
     }
 }
