@@ -20,3 +20,4 @@ class Client extends Model
         'business_name',
     ];
 }
+

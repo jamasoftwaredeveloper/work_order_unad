@@ -1153,6 +1153,9 @@ class CitySeeder extends Seeder
             ['state_id' => 32, 'name' => 'Villavieja', 'created_at' => now(), 'updated_at' => now()],
             ['state_id' => 32, 'name' => 'Yaguar\u00e1', 'created_at' => now(), 'updated_at' => now()],
         ];
-        city::insert($cities);
+        foreach ($cities as $city) {
+            $city['name'] = json_decode('"' . $city['name'] . '"'); // Decodificar el campo 'name'
+            City::create($city);
+        }
     }
 }

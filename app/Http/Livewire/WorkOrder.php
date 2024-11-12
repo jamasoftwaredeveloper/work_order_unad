@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use Illuminate\Support\Str;
 
 class WorkOrder extends Component
 {
@@ -20,6 +21,7 @@ class WorkOrder extends Component
     public $countries, $country_id, $states, $state_id, $cities = null, $wark_order_id, $users = null;
     public $order_number, $client_id, $city_id, $address,  $internal_code, $description_equipment, $brand, $model, $magnitude, $series, $class, $clients = null;
     public $resolution, $measuring_rangeity, $type_of_request, $person_requesting_id, $means_of_application, $date_of_request, $reception_number, $date_of_reception;
+    public $description_activities, $user_responsible_activities, $date_realization_activities;
     public $rows = [];
     public $addWorkOrder = false, $updateWorkOrder = false, $deleteWorkOrder = false;
 
@@ -92,9 +94,10 @@ class WorkOrder extends Component
         $this->resetValidationAndFields();
         $this->addWorkOrder     = true;
         $this->wark_order_id     = '';
-        $this->cities   = City::pluck('name', 'id');
-        Log::info( $this->cities);
+        $this->cities   = City::orderBy('name', 'asc')->pluck('name', 'id');
+
         $this->clients   = Client::pluck('name', 'id');
+        $this->order_number = Str::upper(Str::random(8));
         $this->users = User::pluck(DB::raw('CONCAT(first_name, " ", last_name)'), 'id');
 
         return view('work_order.create');
@@ -209,44 +212,29 @@ class WorkOrder extends Component
     }
     public function addRow()
     {
-        /*
+        $user = User::find($this->user_responsible_activities);
         // Asegurarse de que los campos no estén vacíos antes de agregar la fila
-        if ($this->name && $this->email) {
+        if ($this->description_activities && $this->user_responsible_activities && $this->date_realization_activities) {
             $this->rows[] = [
-                'name' => $this->name,
-                'email' => $this->email
+                'description_activities' => $this->description_activities,
+                'user_responsible_activities' =>  $user->full_name,
+                'date_realization_activities' => $this->date_realization_activities,
             ];
 
             // Limpiar los campos de entrada después de agregar la fila
-            $this->name = '';
-            $this->email = '';
+            $this->description_activities = '';
+            $this->user_responsible_activities = '';
+            $this->date_realization_activities = '';
+        }
+    }
 
-            <div>
-    <!-- Formulario para agregar una fila -->
-    <form wire:submit.prevent="addRow">
-        <input type="text" wire:model="name" placeholder="Nombre" required>
-        <input type="email" wire:model="email" placeholder="Correo electrónico" required>
-        <button type="submit">Agregar</button>
-    </form>
-
-    <!-- Tabla para mostrar las filas -->
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($rows as $row)
-                <tr>
-                    <td>{{ $row['name'] }}</td>
-                    <td>{{ $row['email'] }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
-        }*/
+    public function removeRow($index)
+    {
+        // Verifica si el índice existe en el array
+        if (isset($this->rows[$index])) {
+            unset($this->rows[$index]);
+            // Reindexar el array para evitar problemas con índices desordenados
+            $this->rows = array_values($this->rows);
+        }
     }
 }
