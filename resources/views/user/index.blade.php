@@ -36,7 +36,7 @@
                                     @empty
                                     <x-table-empty />
                                     @endforelse
-                                @endif   
+                                @endif
                                 </x-table-td>
                                 <x-table-td>{{ $user->email }}</x-table-td>
                                 <x-table-td>{{ Carbon\Carbon::parse($user->updated_at)->format('d/m/Y h:m:s') }}</x-table-td>

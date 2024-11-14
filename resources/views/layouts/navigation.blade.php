@@ -70,30 +70,6 @@
                     <span>{{ __('Users') }}</span>
                 </x-responsive-nav-link>
                 @endcan
-                @can('document_type_index')
-                <x-responsive-nav-link :href="route('document_types')" :active="request()->routeIs('document_types')" class="flex flex-row">
-                    <div class="basis-6">
-                        <i class="fa-solid fa-id-card"></i>
-                    </div>
-                    <span>{{ __('Document Types') }}</span>
-                </x-responsive-nav-link>
-                @endcan
-                @can('state_index')
-                <x-responsive-nav-link :href="route('states')" :active="request()->routeIs('states')" class="flex flex-row">
-                    <div class="basis-6">
-                        <i class="fa-solid fa-map-location-dot"></i>
-                    </div>
-                    <span>{{ __('States') }}</span>
-                </x-responsive-nav-link>
-                @endcan
-                @can('city_index')
-                <x-responsive-nav-link :href="route('cities')" :active="request()->routeIs('cities')" class="flex flex-row">
-                    <div class="basis-6">
-                        <i class="fa-solid fa-city"></i>
-                    </div>
-                    <span>{{ __('Cities') }}</span>
-                </x-responsive-nav-link>
-                @endcan
                 @can('role_index')
                 <x-responsive-nav-link :href="route('roles')" :active="request()->routeIs('roles')" class="flex flex-row">
                     <div class="basis-6">

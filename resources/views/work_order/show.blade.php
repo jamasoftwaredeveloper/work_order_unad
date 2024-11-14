@@ -90,36 +90,32 @@
 
         <div class="grid grid-cols-1 md:grid-cols-1 xs:grid-cols-1 gap-1 mt-2">
             <div class="rounded overflow-x-auto">
-            <table class="min-w-full text-left text-sm font-light">
-                <thead class="border-b bg-secondary-800 font-medium text-white dark:border-secondary-500 dark:bg-secondary-900">
-                    <tr>
-                        <x-table-th title="{{ __('Description activities') }}" />
-                        <x-table-th title="{{ __('User responsible for activities') }}" />
-                        <x-table-th title="{{ __('Date realization activities') }}" />
-                        <th scope="col" class="px-6 py-4">{{ __('Actions') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($rows as $key => $row)
-                    <tr class="border-b transition duration-300 ease-in-out hover:bg-secondary-100 dark:border-secondary-500 dark:hover:bg-secondary-600">
-                        <x-table-td>{{ $row['description_activities'] }}</x-table-td>
-                        <x-table-td>{{ $row['user_responsible_activities'] }}</x-table-td>
-                        <x-table-td>{{ $row['date_realization_activities'] }}</x-table-td>
-                    </tr>
-                    @empty
-                    <x-table-empty colspan="4" />
-                    @endforelse
-                </tbody>
-            </table>
+                <table class="min-w-full text-left text-sm font-light">
+                    <thead class="border-b bg-secondary-800 font-medium text-white dark:border-secondary-500 dark:bg-secondary-900">
+                        <tr>
+                            <x-table-th title="{{ __('Description activities') }}" />
+                            <x-table-th title="{{ __('User responsible for activities') }}" />
+                            <x-table-th title="{{ __('Date realization activities') }}" />
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($rows as $key => $row)
+                        <tr class="border-b transition duration-300 ease-in-out hover:bg-secondary-100 dark:border-secondary-500 dark:hover:bg-secondary-600">
+                            <x-table-td>{{ $row['description_activities'] }}</x-table-td>
+                            <x-table-td>{{ $row['user_responsible_activities'] }}</x-table-td>
+                            <x-table-td>{{ $row['date_realization_activities'] }}</x-table-td>
+                        </tr>
+                        @empty
+                        <x-table-empty colspan="4" />
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 xs:grid-cols-2 gap-6 mt-4">
-            <x-primary-button type="button" wire:click.prevent="store()">
-                <i class="fa-solid fa-save me-1"></i>{{ __('Save') }}
-            </x-primary-button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 xs:grid-cols-2 gap-6 mt-4 flex justify-end">
             <x-secondary-button wire:click.prevent="cancel()">
                 <i class="fa-solid fa-ban me-1"></i>{{ __('Cancel') }}
             </x-secondary-button>
         </div>
-    </div>
 </x-modal>

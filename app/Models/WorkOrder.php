@@ -36,7 +36,12 @@ class WorkOrder extends Model
         'receiving_authorizing',
         'user_creator_id'
     ];
-
+    protected static function booted()
+    {
+        static::deleting(function ($workOrder) {
+            $workOrder->actividades()->delete(); // Explicitly delete related records
+        });
+    }
     // Relaciones
 
     /**
@@ -64,6 +69,6 @@ class WorkOrder extends Model
     }
     public function actividades()
     {
-        return $this->hasMany(Activity::class)->cascadeOnDelete();
+        return $this->hasMany(Activity::class);
     }
 }

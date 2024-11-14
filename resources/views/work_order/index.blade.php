@@ -36,7 +36,7 @@
                                 <x-table-td>{{ $workOrder->personRequesting->first_name }} {{ $workOrder->personRequesting->last_name }}</x-table-td>
                                 <x-table-td>{{ $workOrder->receiving_authorizing }}</x-table-td>
                                 <x-table-td>
-                                    <x-table-buttons id="{{ $workOrder->id }}" />
+                                    <x-table-buttons id="{{ $workOrder->id }}" in_used=""/>
                                 </x-table-td>
                             </tr>
                             @empty

@@ -21,6 +21,6 @@ class UserSeeder extends Seeder
         $user->roles()->detach();
         $user->roles()->attach(1);
 
-        User::factory(10)->create();
+        User::factory(20)->create();
     }
 }

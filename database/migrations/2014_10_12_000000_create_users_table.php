@@ -17,10 +17,6 @@ return new class extends Migration
             $table->string('last_name', 150)->nullable();
             $table->string('phone', 50)->nullable();
             $table->string('email')->unique();
-            $table->string('monthly_points_available')->default(0);
-            $table->string('monthly_accumulated_points')->default(0);
-            $table->string('annual_points_available')->default(0);
-            $table->string('annual_accumulated_points')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('status')->default(true);

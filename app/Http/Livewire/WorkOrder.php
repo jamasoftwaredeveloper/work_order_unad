@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Livewire\WithPagination;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Str;
@@ -94,6 +95,12 @@ class WorkOrder extends Component
         $this->addWorkOrder = false;
         $this->updateWorkOrder = false;
         $this->deleteWorkOrder = false;
+        $this->type_of_requests  = [
+
+            'preventive' => __('Preventivo'),
+            'corrective' => __('Corrrectivo')
+
+        ];
     }
 
     public function mount()
@@ -128,12 +135,6 @@ class WorkOrder extends Component
         $this->order_number = Str::upper(Str::random(8));
         $this->users = User::pluck(DB::raw('CONCAT(first_name, " ", last_name)'), 'id');
 
-        $this->type_of_requests  = [
-
-            'preventive' => __('Preventivo'),
-            'corrective' => __('Corrrectivo')
-
-        ];
         return view('work_order.create');
     }
 
@@ -145,47 +146,62 @@ class WorkOrder extends Component
                 ->with('alert_class', 'danger');
         }
 
-        $this->validate();
-        $workOrder = ModelsWorkOrder::create([
-            'order_number' => $this->order_number,
-            'client_id' => $this->client_id,
-            'city_id' => $this->city_id,
-            'address' => $this->address,
-            'internal_code' => $this->internal_code,
-            'description_equipment' => $this->description_equipment,
-            'brand' => $this->brand,
-            'model' => $this->model,
-            'magnitude' => $this->magnitude,
-            'series' => $this->series,
-            'class' => $this->class,
-            'resolution' => $this->resolution,
-            'measuring_rangeity' => $this->measuring_rangeity,
-            'type_of_request' => $this->type_of_request,
-            'person_requesting_id' => $this->person_requesting_id,
-            'means_of_application' => $this->means_of_application,
-            'date_of_request' => $this->date_of_request,
-            'reception_number' => $this->reception_number,
-            'date_of_reception' => $this->date_of_reception,
-            'receiving_authorizing' => $this->receiving_authorizing,
-            'user_creator_id' => $this->auth
-        ]);
+        DB::beginTransaction();
 
-        $data = array_map(function ($row) {
-            return [
-                'description_activities' => $row['description_activities'],
-                'user_responsible_activities' => $row['user_responsible_activities'],
-                'date_realization_activities' => $row['date_realization_activities'],
-                'created_at' => $this->date_current,
-                'updated_at' => $this->date_current
-            ];
-        }, $this->rows);
+        try {
+            // Realiza las operaciones de base de datos
+            $this->validate();
+            $workOrder = ModelsWorkOrder::create([
+                'order_number' => $this->order_number,
+                'client_id' => $this->client_id,
+                'city_id' => $this->city_id,
+                'address' => $this->address,
+                'internal_code' => $this->internal_code,
+                'description_equipment' => $this->description_equipment,
+                'brand' => $this->brand,
+                'model' => $this->model,
+                'magnitude' => $this->magnitude,
+                'series' => $this->series,
+                'class' => $this->class,
+                'resolution' => $this->resolution,
+                'measuring_rangeity' => $this->measuring_rangeity,
+                'type_of_request' => $this->type_of_request,
+                'person_requesting_id' => $this->person_requesting_id,
+                'means_of_application' => $this->means_of_application,
+                'date_of_request' => $this->date_of_request,
+                'reception_number' => $this->reception_number,
+                'date_of_reception' => $this->date_of_reception,
+                'receiving_authorizing' => $this->receiving_authorizing,
+                'user_creator_id' => $this->auth
+            ]);
+            $this->wark_order_id = $workOrder->id;
+            $data = array_map(function ($row,) {
+                return [
+                    'work_order_id' => $this->wark_order_id,
+                    'description_activities' => $row['description_activities'],
+                    'user_responsible_activities' => $row['user_responsible_activities'],
+                    'date_realization_activities' => $row['date_realization_activities'],
+                    'created_at' => $this->date_current,
+                    'updated_at' => $this->date_current
+                ];
+            }, $this->rows);
 
-        // Insertar todas las actividades a través de la relación
-        $workOrder->actividades()->insert($data);
+            // Insertar todas las actividades a través de la relación
+            $workOrder->actividades()->insert($data);
 
-        return redirect()->route('work_orders')
-            ->with('message', trans('message.Created Successfully.', ['name' => __('Order')]))
-            ->with('alert_class', 'success');
+            DB::commit();
+            return redirect()->route('work_orders')
+                ->with('message', trans('message.Created Successfully.', ['name' => __('Order')]))
+                ->with('alert_class', 'success');
+
+            // Si todo está bien, confirma la transacción
+        } catch (\Exception $e) {
+            // Si ocurre algún error, deshace la transacción
+            DB::rollBack();
+            return redirect()->route('work_orders')
+                ->with('message', $e->getMessage())
+                ->with('alert_class', 'danger');
+        }
     }
 
     public function edit($id)
@@ -224,7 +240,7 @@ class WorkOrder extends Component
         $this->class = $workOrder->class;
         $this->resolution = $workOrder->resolution;
         $this->measuring_rangeity = $workOrder->measuring_rangeity;
-        $this->type_of_request = $workOrder->type_of_request  == 'preventive' ? 'Preventivo' : 'Correctivo';
+        $this->type_of_request = $workOrder->type_of_request;
         $this->person_requesting_id = $workOrder->person_requesting_id;
         $this->means_of_application = $workOrder->means_of_application;
         $this->date_of_request = $workOrder->date_of_request;
@@ -269,7 +285,7 @@ class WorkOrder extends Component
         $this->class = $workOrder->class;
         $this->resolution = $workOrder->resolution;
         $this->measuring_rangeity = $workOrder->measuring_rangeity;
-        $this->type_of_request = $workOrder->type_of_request;
+        $this->type_of_request = $workOrder->type_of_request  == 'preventive' ? 'Preventivo' : 'Correctivo';
         $this->person_requesting_id = $workOrder->personRequesting->first_name . ' ' . $workOrder->personRequesting->last_name;
         $this->means_of_application = $workOrder->means_of_application;
         $this->date_of_request = $workOrder->date_of_request;
@@ -287,114 +303,124 @@ class WorkOrder extends Component
                 ->with('message', trans('message.You do not have the necessary permissions to execute the action.'))
                 ->with('alert_class', 'danger');
         }
+        DB::beginTransaction();
 
-        $this->validate();
-        $workOrder = ModelsWorkOrder::find($this->wark_order_id);
-        if (!$workOrder) {
+        try {
+            // Realiza las operaciones de base de datos
+            $this->validate();
+            $workOrder = ModelsWorkOrder::find($this->wark_order_id);
+            if (!$workOrder) {
+                return redirect()->route('work_orders')
+                    ->with('message', __('Ordén e trabajo no encontrada'))
+                    ->with('alert_class', 'danger');
+            }
+
+            $workOrder->actividades()->delete();
+
+            $workOrder->update([
+                'order_number' => $this->order_number,
+                'client_id' => $this->client_id,
+                'city_id' => $this->city_id,
+                'address' => $this->address,
+                'internal_code' => $this->internal_code,
+                'description_equipment' => $this->description_equipment,
+                'brand' => $this->brand,
+                'model' => $this->model,
+                'magnitude' => $this->magnitude,
+                'series' => $this->series,
+                'class' => $this->class,
+                'resolution' => $this->resolution,
+                'measuring_rangeity' => $this->measuring_rangeity,
+                'type_of_request' => $this->type_of_request,
+                'person_requesting_id' => $this->person_requesting_id,
+                'means_of_application' => $this->means_of_application,
+                'date_of_request' => $this->date_of_request,
+                'reception_number' => $this->reception_number,
+                'date_of_reception' => $this->date_of_reception,
+                'receiving_authorizing' => $this->receiving_authorizing,
+                'user_creator_id' => $this->auth // Asegúrate de que esto sea el ID del usuario autenticado
+            ]);
+
+            $data = array_map(function ($row,) {
+                return [
+                    'work_order_id' => $this->wark_order_id,
+                    'description_activities' => $row['description_activities'],
+                    'user_responsible_activities' => $row['user_responsible_activities'],
+                    'date_realization_activities' => $row['date_realization_activities'],
+                    'created_at' => $this->date_current,
+                    'updated_at' => $this->date_current
+                ];
+            }, $this->rows);
+
+            // Insertar todas las actividades a través de la relación
+            $workOrder->actividades()->insert($data);
+
+            // Si todo está bien, confirma la transacción
+            DB::commit();
             return redirect()->route('work_orders')
-                ->with('message', __('Ordén e trabajo no encontrada'))
+                ->with('message', trans('message.Updated Successfully.', ['name' => __('User')]))
+                ->with('alert_class', 'success');
+
+        } catch (\Exception $e) {
+            // Si ocurre algún error, deshace la transacción
+            DB::rollBack();
+            // Opcional: puedes manejar el error aquí o lanzarlo
+            return redirect()->route('work_orders')
+                ->with('message', $e->getMessage())
                 ->with('alert_class', 'danger');
         }
-
-        $workOrder->actividades()->delete();
-
-        $this->validate();
-        $workOrder->update([
-            'order_number' => $this->order_number,
-            'client_id' => $this->client_id,
-            'city_id' => $this->city_id,
-            'address' => $this->address,
-            'internal_code' => $this->internal_code,
-            'description_equipment' => $this->description_equipment,
-            'brand' => $this->brand,
-            'model' => $this->model,
-            'magnitude' => $this->magnitude,
-            'series' => $this->series,
-            'class' => $this->class,
-            'resolution' => $this->resolution,
-            'measuring_rangeity' => $this->measuring_rangeity,
-            'type_of_request' => $this->type_of_request,
-            'person_requesting_id' => $this->person_requesting_id,
-            'means_of_application' => $this->means_of_application,
-            'date_of_request' => $this->date_of_request,
-            'reception_number' => $this->reception_number,
-            'date_of_reception' => $this->date_of_reception,
-            'receiving_authorizing' => $this->receiving_authorizing,
-            'user_creator_id' => $this->auth // Asegúrate de que esto sea el ID del usuario autenticado
-        ]);
-
-        $data = array_map(function ($row) {
-            return [
-                'description_activities' => $row['description_activities'],
-                'user_responsible_activities' => $row['user_responsible_activities'],
-                'date_realization_activities' => $row['date_realization_activities'],
-                'created_at' => $this->date_current,
-                'updated_at' => $this->date_current
-            ];
-        }, $this->rows);
-
-        // Insertar todas las actividades a través de la relación
-        $workOrder->actividades()->insert($data);
-
-        return redirect()->route('work_orders')
-            ->with('message', trans('message.Updated Successfully.', ['name' => __('User')]))
-            ->with('alert_class', 'success');
     }
 
     public function cancel()
     {
+        $this->showWorkOrder =false;
         $this->resetValidationAndFields();
     }
 
     public function setDeleteId($id)
     {
 
-        /*
         if (Gate::denies('work_order_delete')) {
             return redirect()->route('work_orders')
                 ->with('message', trans('message.You do not have the necessary permissions to execute the action.'))
                 ->with('alert_class', 'danger');
         }
 
-        $user = User::find($id);
-        if (!$user) {
+        $wordOrder = ModelsWorkOrder::find($id);
+        if (!$wordOrder) {
             return redirect()->route('work_orders')
-                ->with('message', __('User not found'))
+                ->with('message', __('Orden de trabajo, no encontrada'))
                 ->with('alert_class', 'danger');
         }
-        $this->user_id = $user->id;
+        $this->wark_order_id = $wordOrder->id;
         $this->resetValidationAndFields();
-        $this->deleteWorkOrder = true; */
+        $this->deleteWorkOrder = true;
     }
 
     public function delete()
     {
-        /*
+
         if (Gate::denies('work_order_delete')) {
             return redirect()->route('work_orders')
                 ->with('message', trans('message.You do not have the necessary permissions to execute the action.'))
                 ->with('alert_class', 'danger');
         }
 
-        $user = User::find($this->user_id);
-        if (!$user) {
+        $wordOrder = ModelsWorkOrder::find($this->wark_order_id);
+        if (!$wordOrder) {
             return redirect()->route('work_orders')
-                ->with('message', __('User not found'))
+                ->with('message', __('Orden de trabajo, no encontrada'))
                 ->with('alert_class', 'danger');
-        }
-        if (isset($user->image) && Storage::exists('public/images/' . $user->image->url)) {
-            Storage::delete('public/images/' . $user->image->url);
         }
 
         DB::beginTransaction();
-        $user->roles()->detach();
-        $user->image()->delete();
-        $user->delete();
+        $wordOrder->actividades()->detach();
+        $wordOrder->delete();
         DB::commit();
 
         return redirect()->route('work_orders')
             ->with('message', trans('message.Deleted Successfully.', ['name' => __('User')]))
-            ->with('alert_class', 'success'); */
+            ->with('alert_class', 'success');
     }
     public function addRow()
     {

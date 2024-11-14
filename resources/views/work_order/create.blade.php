@@ -1,4 +1,4 @@
-<x-modal title="{{ __('Crear orden de trabajo') }}" wire:model="addWorkOrder" focusable :maxWidth="xl">
+<x-modal title="{{ __('Crear orden de trabajo') }}" wire:model="addWorkOrder" focusable :maxWidth="'xl'">
     <form class="mt-6 space-y-6" method="POST">
         @csrf
         <p class="italic text-sm text-red-700 m-0">

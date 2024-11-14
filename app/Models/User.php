@@ -32,11 +32,7 @@ class User extends Authenticatable
         'email',
         'password',
         'status',
-        'observation',
-        'monthly_points_available',
-        'monthly_accumulated_points',
-        'annual_points_available',
-        'annual_accumulated_points'
+        'observation'
     ];
 
     /**
