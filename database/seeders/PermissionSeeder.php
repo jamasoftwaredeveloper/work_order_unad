@@ -49,29 +49,11 @@ class PermissionSeeder extends Seeder
             ['title' => 'work_order_add', 'menu' => 'WorkOrder', 'permission' => 'Add', 'created_at' => now(), 'updated_at' => now(),],
             ['title' => 'work_order_edit', 'menu' => 'WorkOrder', 'permission' => 'Edit', 'created_at' => now(), 'updated_at' => now(),],
             ['title' => 'work_order_delete', 'menu' => 'WorkOrder', 'permission' => 'Delete', 'created_at' => now(), 'updated_at' => now(),],
+            ['title' => 'work_order_show', 'menu' => 'WorkOrder', 'permission' => 'See', 'created_at' => now(), 'updated_at' => now(),],
             // Profile
             ['title' => 'profile_index', 'menu' => 'Profile', 'permission' => 'See', 'created_at' => now(), 'updated_at' => now(),],
             ['title' => 'profile_edit', 'menu' => 'Profile', 'permission' => 'Edit', 'created_at' => now(), 'updated_at' => now(),],
             ['title' => 'profile_delete', 'menu' => 'Profile', 'permission' => 'Delete', 'created_at' => now(), 'updated_at' => now(),],
-            // Account management
-            ['title' => 'account_management_index', 'menu' => 'Account management', 'permission' => 'See', 'created_at' => now(), 'updated_at' => now(),],
-            ['title' => 'account_management_add', 'menu' => 'Account management', 'permission' => 'Add', 'created_at' => now(), 'updated_at' => now(),],
-            ['title' => 'account_management_edit', 'menu' => 'Account management', 'permission' => 'Edit', 'created_at' => now(), 'updated_at' => now(),],
-            ['title' => 'account_management_delete', 'menu' => 'Account management', 'permission' => 'Delete', 'created_at' => now(), 'updated_at' => now(),],
-            // Reseller management
-            ['title' => 'reseller_management_index', 'menu' => 'Reseller management', 'permission' => 'See', 'created_at' => now(), 'updated_at' => now(),],
-            ['title' => 'reseller_management_add', 'menu' => 'Reseller management', 'permission' => 'Add', 'created_at' => now(), 'updated_at' => now(),],
-            ['title' => 'reseller_management_edit', 'menu' => 'Reseller management', 'permission' => 'Edit', 'created_at' => now(), 'updated_at' => now(),],
-            ['title' => 'reseller_management_delete', 'menu' => 'Reseller management', 'permission' => 'Delete', 'created_at' => now(), 'updated_at' => now(),],
-            //Register Operation
-            ['title' => 'register_operation_index', 'menu' => 'Register Operation', 'permission' => 'See', 'created_at' => now(), 'updated_at' => now(),],
-            //Credit Management
-            ['title' => 'credit_management_index', 'menu' => 'Credit Management', 'permission' => 'See', 'created_at' => now(), 'updated_at' => now(),],
-            ['title' => 'credit_management_add', 'menu' => 'Credit Management', 'permission' => 'Add', 'created_at' => now(), 'updated_at' => now(),],
-            ['title' => 'credit_management_edit', 'menu' => 'Credit Management', 'permission' => 'Edit', 'created_at' => now(), 'updated_at' => now(),],
-            ['title' => 'credit_management_delete', 'menu' => 'Credit Management', 'permission' => 'Delete', 'created_at' => now(), 'updated_at' => now(),],
-
-
         ];
 
         Permission::insert($permissions);

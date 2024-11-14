@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(WorkOrder::class)->constrained()
-            ->onUpdate('restrict')->onDelete('restrict');
+            ->onUpdate('restrict')->onDelete('cascade');
             $table->string('description_activities')->nullable();
             $table->string('user_responsible_activities')->nullable();
             $table->string('date_realization_activities')->nullable();

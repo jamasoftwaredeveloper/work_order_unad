@@ -1,20 +1,19 @@
-<x-modal title="{{ __('Create New Work Order') }}" wire:model="addWorkOrder" focusable :maxWidth="'xl'">
+<x-modal title="{{ __('Crear orden de trabajo') }}" wire:model="addWorkOrder" focusable :maxWidth="xl">
     <form class="mt-6 space-y-6" method="POST">
         @csrf
-        <x-validation-errors />
         <p class="italic text-sm text-red-700 m-0">
             {{ __('Fields marked with * are required') }}
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 xs:grid-cols-2 gap-6">
             <div>
-                <x-input-label for="order_number">{{ __('Order number') }} *</x-input-label>
+                <x-input-label for="order_number">{{ __('Número de orden') }} *</x-input-label>
                 <x-text-input id="order_number" class="block mt-1 w-full" type="text"
                     name="order_number" :value="old('order_number')" wire:model="order_number"
                     autocomplete="off" maxlength="200" required autofocus disabled />
                 <x-input-error :messages="$errors->get('order_number')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="city_id" :value="__('City')" />
+                <x-input-label for="city_id" :value="__('Ciudad')" />
                 <x-select-input id="city_id" class="block mt-1 w-full  font-sans"
                     name="city_id" wire:model="city_id">
                     <option value="">{{ __('Please select') }}</option>
@@ -25,7 +24,7 @@
                 <x-input-error :messages="$errors->get('city_id')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="client_id" :value="__('Client')" />
+                <x-input-label for="client_id" :value="__('Cliente')" />
                 <x-select-input id="client_id" class="block mt-1 w-full"
                     name="client_id" wire:model="client_id">
                     <option value="">{{ __('Please select') }}</option>
@@ -36,78 +35,83 @@
                 <x-input-error :messages="$errors->get('client_id')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="address">{{ __('Address') }} *</x-input-label>
+                <x-input-label for="address">{{ __('Dirección') }} *</x-input-label>
                 <x-text-input id="address" class="block mt-1 w-full" type="text"
                     name="address" :value="old('address')" wire:model="address"
                     autocomplete="off" maxlength="200" required autofocus />
                 <x-input-error :messages="$errors->get('address')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Internal code')" />
+                <x-input-label for="" :value="__('Codigo interno')" />
                 <x-text-input id="internal_code" class="block mt-1 w-full" type="text"
                     name="internal_code" :value="old('internal_code')" wire:model="internal_code"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('internal_code')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Brand')" />
+                <x-input-label for="" :value="__('Marca')" />
                 <x-text-input id="brand" class="block mt-1 w-full" type="text"
                     name="brand" :value="old('brand')" wire:model="brand"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('brand')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Model')" />
+                <x-input-label for="" :value="__('Modelo')" />
                 <x-text-input id="model" class="block mt-1 w-full" type="text"
                     name="model" :value="old('model')" wire:model="model"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('model')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Magnitude')" />
+                <x-input-label for="" :value="__('Magnitud')" />
                 <x-text-input id="magnitude" class="block mt-1 w-full" type="text"
                     name="magnitude" :value="old('model')" wire:model="magnitude"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('magnitude')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Series')" />
+                <x-input-label for="" :value="__('Serie')" />
                 <x-text-input id="series" class="block mt-1 w-full" type="text"
                     name="series" :value="old('series')" wire:model="series"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('series')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Class')" />
+                <x-input-label for="" :value="__('Clase')" />
                 <x-text-input id="class" class="block mt-1 w-full" type="text"
                     name="class" :value="old('class')" wire:model="class"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('class')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Resolution')" />
+                <x-input-label for="" :value="__('Resolución')" />
                 <x-text-input id="resolution" class="block mt-1 w-full" type="text"
                     name="resolution" :value="old('resolution')" wire:model="resolution"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('resolution')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Measuring rangeity')" />
+                <x-input-label for="" :value="__('⁠Alcance de medición')" />
                 <x-text-input id="measuring_rangeity" class="block mt-1 w-full" type="text"
                     name="measuring_rangeity" :value="old('measuring_rangeity')" wire:model="measuring_rangeity"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('measuring_rangeity')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Type of request')" />
-                <x-text-input id="type_of_request" class="block mt-1 w-full" type="text"
-                    name="type_of_request" :value="old('type_of_request')" wire:model="type_of_request"
-                    maxlength="4" autocomplete="off" />
+                <x-input-label for="" :value="__('⁠Tipo de solicitud')" />
+
+                <x-select-input id="type_of_request" class="block mt-1 w-full"
+                    name="type_of_request" wire:model="type_of_request">
+                    <option value="">{{ __('Please select') }}</option>
+                    @foreach ($type_of_requests as $key => $item)
+                    <option value="{{$key}}" {{ old('type_of_request') == $key ? 'selected' : '' }}>{{$item}}</option>
+                    @endforeach
+                </x-select-input>
                 <x-input-error :messages="$errors->get('type_of_request')" class="mt-2" />
             </div>
 
             <div>
-                <x-input-label for="person_requesting_id" :value="__('Person requesting')" />
+                <x-input-label for="person_requesting_id" :value="__('⁠Persona que solicita')" />
                 <x-select-input id="person_requesting_id" class="block mt-1 w-full"
                     name="person_requesting_id" wire:model="person_requesting_id">
                     <option value="">{{ __('Please select') }}</option>
@@ -118,51 +122,58 @@
                 <x-input-error :messages="$errors->get('person_requesting_id')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Means of application')" />
+                <x-input-label for="" :value="__('⁠Medio de solicitud')" />
                 <x-text-input id="means_of_application" class="block mt-1 w-full" type="text"
                     name="means_of_application" :value="old('means_of_application')" wire:model="means_of_application"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('means_of_application')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Date oF request')" />
+                <x-input-label for="" :value="__('⁠Fecha de solicitud')" />
                 <x-date-input id="date_of_request" class="block mt-1 w-full"
                     name="date_of_request" :value="old('date_of_request')" wire:model="date_of_request"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('date_of_request')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Reception number')" />
+                <x-input-label for="" :value="__('⁠Número de recepcion')" />
                 <x-text-input id="reception_number" class="block mt-1 w-full" type="text"
                     name="reception_number" :value="old('reception_number')" wire:model="reception_number"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('reception_number')" class="mt-2" />
             </div>
             <div>
-                <x-input-label for="" :value="__('Date of reception')" />
+                <x-input-label for="" :value="__('Fecha de recepcion')" />
                 <x-date-input id="date_of_reception" class="block mt-1 w-full"
                     name="date_of_reception" :value="old('date_of_reception')" wire:model="date_of_reception"
-                    maxlength="4" autocomplete="off" />
+                    autocomplete="off" />
                 <x-input-error :messages="$errors->get('date_of_reception')" class="mt-2" />
+            </div>
+            <div>
+                <x-input-label for="" :value="__('Nombre de quien recibe y autoriza')" />
+                <x-text-input id="receiving_authorizing" class="block mt-1 w-full" type="text"
+                    name="receiving_authorizing" :value="old('receiving_authorizing')" wire:model="receiving_authorizing"
+                    autocomplete="off" />
+                <x-input-error :messages="$errors->get('receiving_authorizing')" class="mt-2" />
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-1 xs:grid-cols-1 gap-1">
             <div>
-                <x-input-label for="description_equipment">{{ __('Description equipment') }}</x-input-label>
-                <x-text-area id="description_equipment" class="block mt-1 w-full" name="description_equipment" :value="$description_equipment" wire:model="description_equipment" rows="4" cols="50" autocomplete="off" maxlength="150" />
+                <x-input-label for="description_equipment">{{ __('⁠Descripción del equipo') }}</x-input-label>
+                <x-text-area id="description_equipment" class="block mt-1 w-full" name="description_equipment" :value="$description_equipment" wire:model="description_equipment" rows="4" cols="50" autocomplete="off" maxlength="150" placeholder="Descripción de equipo"/>
             </div>
         </div>
     </form>
 
-    <h1 class="text-center mt-2"><b> {{ __(key: 'Activities') }}</b></h1>
+    <h1 class="text-center mt-2"><b> {{ __(key: 'Actividades') }}</b></h1>
     <form wire:submit.prevent="addRow" class="mt-2">
         <div class="grid grid-cols-1 md:grid-cols-1 xs:grid-cols-1 gap-1">
-            <x-text-area id="description_activities" class="block mt-1 w-full" name="description_activities" :value="$description_activities" wire:model="description_activities" rows="4" cols="50" autocomplete="off" maxlength="150" />
+            <x-text-area id="description_activities" class="block mt-1 w-full" name="description_activities" :value="$description_activities" wire:model="description_activities" rows="4" cols="50" autocomplete="off" maxlength="150" placeholder="Descripción de actividades"/>
         </div>
         <div class="grid grid-cols-3 md:grid-cols-3 xs:grid-cols-1 gap-3">
             <x-select-input id="user_responsible_activities" class="block mt-1 w-full"
-                name="user_responsible_activities" wire:model="user_responsible_activities">
-                <option value="">{{ __('Please select') }}</option>
+                name="user_responsible_activities" wire:model="user_responsible_activities" >
+                <option value="">{{ __('Selecciona un usuario responsable de la actividad') }}</option>
                 @foreach ($users as $key => $item)
                 <option value="{{$key}}" {{ old('user_responsible_activities') == $key ? 'selected' : '' }}>{{$item}}</option>
                 @endforeach
@@ -170,7 +181,7 @@
             <x-input-error :messages="$errors->get('user_responsible_activities')" class="mt-2" />
             <x-date-input id="date_realization_activities" class="block mt-1 w-full"
                 name="date_realization_activities" :value="old('date_realization_activities')" wire:model="date_realization_activities"
-                maxlength="4" autocomplete="off" />
+                autocomplete="off" />
             <x-input-error :messages="$errors->get('date_realization_activities')" class="mt-2" />
 
             <button class="text-white bg-success-800 mt-2" type="submit"> <i class="fa-solid fa-plus me-1"></i> Agregar</button>

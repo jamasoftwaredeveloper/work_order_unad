@@ -32,7 +32,9 @@ class WorkOrder extends Model
         'means_of_application',
         'date_of_request',
         'reception_number',
-        'date_of_reception'
+        'date_of_reception',
+        'receiving_authorizing',
+        'user_creator_id'
     ];
 
     // Relaciones
@@ -62,6 +64,6 @@ class WorkOrder extends Model
     }
     public function actividades()
     {
-        return $this->hasMany(Activity::class);
+        return $this->hasMany(Activity::class)->cascadeOnDelete();
     }
 }
