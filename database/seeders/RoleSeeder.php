@@ -54,16 +54,6 @@ class RoleSeeder extends Seeder
         });
         Role::findOrFail(3)->permissions()->sync($user_permissions->pluck('id')->toArray());
 
-        //Reseller
-        $account_management = $admin_permissions->filter(function ($permission) {
-            $str = strpos($permission->title, 'account_management');
-            return $str !== false;
-        });
-
-        $register_operation = $admin_permissions->filter(function ($permission) {
-            $str = strpos($permission->title, 'register_operation');
-            return $str !== false;
-        });
 
         $profile = $admin_permissions->filter(function ($permission) {
             $str = strpos($permission->title, 'profile');
@@ -74,7 +64,7 @@ class RoleSeeder extends Seeder
             }
         });
 
-        $permission = array_merge($account_management->pluck('id')->toArray(), $register_operation->pluck('id')->toArray(), $profile->pluck('id')->toArray());
+        $permission = array_merge( $profile->pluck('id')->toArray());
 
         Role::findOrFail(3)->permissions()->sync($permission);
     }
